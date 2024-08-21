@@ -36,21 +36,32 @@ var sum_to_n_c = function (n) {
 	return n < 0 ? -getSum(-n) : getSum(n);
 };
 
-// const START = -10;
-// const END = 10;
+const START = -100;
+const END = 100;
 
-// const IMPLEMENTATIONS = {
-// 	a: sum_to_n_a,
-// 	b: sum_to_n_b,
-// 	c: sum_to_n_c,
-// };
+const TESTS = Array.from({ length: END - START + 1 }, (_, i) => START + i);
 
-// Object.entries(IMPLEMENTATIONS).forEach(([key, implementation]) => {
-// 	console.log((key == "a" ? "" : "\n") + "+" + "-".repeat(18) + "+");
-// 	console.log(`| Implementation ${key.toUpperCase()} |`);
-// 	console.log("+" + "-".repeat(18) + "+");
+const IMPLEMENTATIONS = {
+	a: sum_to_n_a,
+	b: sum_to_n_b,
+	c: sum_to_n_c,
+};
 
-// 	for (let n = START; n <= END; n++) {
-// 		console.log(`sum_to_n_${key}(${n}) = ${implementation(n)}`);
-// 	}
-// });
+let results = [];
+
+Object.entries(IMPLEMENTATIONS).forEach(([key, implementation]) => {
+	console.log("+" + "-".repeat(18) + "+");
+	console.log(`| Implementation ${key.toUpperCase()} |`);
+	console.log("+" + "-".repeat(18) + "+");
+
+	TESTS.forEach((n, i) => {
+		const result = implementation(n);
+		console.log(`sum_to_n_${key}(${n}) = ${result}`);
+
+		if (key === "a") {
+			results.push(result);
+		} else if (results[i] !== result) {
+			throw new Error(`Implementation ${key} failed for n = ${n}`);
+		}
+	});
+});
