@@ -1,4 +1,4 @@
-import pricesJSON from "@/assets/prices.json";
+import pricesJSON from "../assets/prices.json";
 
 type PriceInfo = {
   currency: string;
