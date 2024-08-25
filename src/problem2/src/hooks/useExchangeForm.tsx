@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { ExchangeFormData } from "@/types/exchangeForm";
 
@@ -14,7 +14,6 @@ export function useExchangeForm(): UseFormReturn<ExchangeFormData> & {
     setIsLoading(true);
     try {
       const data = form.getValues();
-      // Perform exchange logic here
       const { from, to } = data;
       const rate = from.currency.price / to.currency.price;
       const fromAmount = parseFloat(from.amount);
