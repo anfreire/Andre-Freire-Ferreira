@@ -1,9 +1,9 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { memo } from "react";
-import { ReactComponent as Sun } from "@/assets/theme/sun.svg";
-import { ReactComponent as Moon } from "@/assets/theme/moon.svg";
+import { ReactComponent as Sun } from "@/assets/sun.svg";
+import { ReactComponent as Moon } from "@/assets/moon.svg";
 
-const ThemeController = (): JSX.Element => {
+const ThemeController = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
   return (
