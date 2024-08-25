@@ -1,5 +1,5 @@
 import ThemeController from "@/components/ThemeController";
-import ExchangeForm from "./components/ExchangeForm";
+import ExchangeForm from "./components/ExchangeForm/Form";
 
 function App() {
   return (
