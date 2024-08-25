@@ -1,12 +1,12 @@
 import React from "react";
-import { TokenOptions } from "@/data/tokens";
 import { currencyDropdownStyle } from "@/styles/currencyDropdown";
 import { ExchangeFieldData } from "@/types/exchangeForm";
-import ReactSelect from "react-select";
+import ReactSelect, { ActionMeta } from "react-select";
+import { tokens, tokenImages } from "@/data/tokens";
 
 interface CurrencyDropdownProps {
   value: ExchangeFieldData["currency"];
-  onChange: (...event: any[]) => void;
+  onChange: (newValue: any, actionMeta: ActionMeta<string[]>) => void;
 }
 
 const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
@@ -21,18 +21,18 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
       styles={currencyDropdownStyle}
       isSearchable={false}
       className="w-16 border-0"
-      options={TokenOptions}
+      options={tokens}
       components={{
-        SingleValue: ({ data }) => (
+        SingleValue: ({ option }) => (
           <div className="flex items-center gap-0">
-            <img src={data.image} alt={data.label} className="w-6 h-6" />
+            <img src={tokenImages[option]} alt={option} className="w-6 h-6" />
           </div>
         ),
       }}
       formatOptionLabel={(option) => (
         <div className="flex items-center gap-2 overflow-x-hidden">
-          <img src={option.image} alt={option.label} className="w-6 h-6" />
-          <label>{option.label}</label>
+          <img src={tokenImages[option]} alt={option} className="w-6 h-6" />
+          <label>{option}</label>
         </div>
       )}
     />

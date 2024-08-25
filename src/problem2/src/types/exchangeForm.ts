@@ -1,7 +1,5 @@
-import { TokenOption } from "@/data/tokens";
-
 export interface ExchangeFieldData {
-  currency: TokenOption;
+  currency: string;
   amount: string;
 }
 

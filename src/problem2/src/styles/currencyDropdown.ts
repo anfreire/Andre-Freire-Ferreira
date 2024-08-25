@@ -1,7 +1,7 @@
-import { TokenOption } from "@/data/tokens";
+import { tokens } from "@/data/tokens";
 import { StylesConfig } from "react-select";
 
-export const currencyDropdownStyle: StylesConfig<TokenOption, false> = {
+export const currencyDropdownStyle: StylesConfig<string[], false> = {
   control: (provided) => ({
     ...provided,
     backgroundColor: "oklch(var(--b1))",
