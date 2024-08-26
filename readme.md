@@ -10,4 +10,5 @@ You can either provide a link to an online repository, attach the solution in yo
 We're cool as long as we can view your solution without any pain.
 
 [Problem 1: Three ways to sum to n](src/problem1/readme.md)
-[]
+[Problem 2: Fancy Form](src/problem2)
+[Problem 3: Messy React](src/problem3/readme.md)
