@@ -34,7 +34,7 @@ const useFormattedWalletBalances = () => {
 
 interface WalletPageProps extends Omit<BoxProps, "children"> {}
 
-const WalletPage = (props: WalletPageProps): JSX.Element => {
+const WalletPage = (props: WalletPageProps) => {
 	const formattedBalances = useFormattedWalletBalances();
 
 	return (

@@ -183,26 +183,26 @@ Assuming the `FormattedWalletBalance` interface is going to be used only in this
 
 1. Use of `React.FC` type for the `WalletPage` component
 
-`React.FC` implicitly includes the children prop. In this case, we are using the children prop, but it is generally advised not to use `React.FC`. React does not recommend it anymore. There is no need to use this typing, and it can be considered redundant and unnecessary.
+There is no need to use the `React.FC` type for the `WalletPage` component. React already has built-in types for functional components. We can remove the type declaration.
 
 ```diff
 - const WalletPage: React.FC<Props> = (props: Props) => {
-+ const WalletPage = (props: WalletPageProps): JSX.Element => {
++ const WalletPage = (props: WalletPageProps) => {
 ```
 
 2. Unnecessary prop spreading on the component body
 
 ```diff
-- const WalletPage = (props: WalletPageProps): JSX.Element => {
-+ const WalletPage = ({ children, ...rest }: WalletPageProps): JSX.Element => {
+- const WalletPage = (props: WalletPageProps) => {
++ const WalletPage = ({ children, ...rest }: WalletPageProps) => {
 -     const { children, ...rest } = props;
 ```
 
 3. Given that we have removed the `children` prop from the `WalletPageProps` interface, we should remove the `children` prop from the destructuring assignment. Also let's replace the name `rest` with `props` for better readability.
 
 ```diff
-- const WalletPage = ({ children, ...rest }: WalletPageProps): JSX.Element => {
-+ const WalletPage = (props: WalletPageProps): JSX.Element => {
+- const WalletPage = ({ children, ...rest }: WalletPageProps) => {
++ const WalletPage = (props: WalletPageProps) => {
 ```
     
 
@@ -304,7 +304,7 @@ import { getBlockchainPriority } from "@/utils/Blockchain";
 For better readability and maintainability, it is recommended to extract the logic into separate functions or, in this case, hooks. Because we are only going to use the `rows` variable in the component itself, we can extract the logic into a custom hook. Since this hook will be used only in this component, we can define it in the component file itself.
 
 ```diff
-+ const useWalletRows = (): JSX.Element[] => {
++ const useWalletRows = () => {
 + 	const balances = useWalletBalances();
 + 	const prices = usePrices();
 + 
@@ -353,7 +353,7 @@ For better readability and maintainability, it is recommended to extract the log
 + 	);
 + }
 
-  const WalletPage = (props: WalletPageProps): JSX.Element => {
+  const WalletPage = (props: WalletPageProps) => {
 - 	const balances = useWalletBalances();
 - 	const prices = usePrices();
 +   const rows = useWalletRows();
@@ -411,7 +411,7 @@ For better readability and maintainability, it is recommended to extract the log
 We should separate the data and component logic. The hook should return the data, and the component should handle the rendering.
 
 ```diff
-  const useWalletRows = (): JSX.Element[] => {
+  const useWalletRows = () => {
      // ...
 
 - 	 const rows = sortedBalances.map(
@@ -436,7 +436,7 @@ We should separate the data and component logic. The hook should return the data
 +	);
   }
 
-  const WalletPage = (props: WalletPageProps): JSX.Element => {
+  const WalletPage = (props: WalletPageProps) => {
     const rows = useWalletRows();
 
 -	return <div {...props}>{rows}</div>;
@@ -459,13 +459,13 @@ We should separate the data and component logic. The hook should return the data
 Because we are no longer returning any rows, but the data, we should rename the hook to match the return type, in this case `useFormattedWalletBalances`.
 
 ```diff
-- const useWalletRows = (): JSX.Element[] => {
+- const useWalletRows = () => {
 + const useFormattedWalletBalances = (): FormattedWalletBalance[] => {
 
     // ...
   }
 
-    const WalletPage = (props: WalletPageProps): JSX.Element => {
+    const WalletPage = (props: WalletPageProps) => {
 -       const rows = useWalletRows();
 +       const formattedBalances = useFormattedWalletBalances();
     
@@ -728,7 +728,7 @@ const useFormattedWalletBalances = () => {
 
 interface WalletPageProps extends Omit<BoxProps, "children"> {}
 
-const WalletPage = (props: WalletPageProps): JSX.Element => {
+const WalletPage = (props: WalletPageProps) => {
 	const formattedBalances = useFormattedWalletBalances();
 
 	return (
