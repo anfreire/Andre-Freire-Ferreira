@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import ReactSelect, { ActionMeta, StylesConfig } from "react-select";
 import { tokens } from "@/data/tokens";
 import SingleValueComponent from "./SingleValueComponent";
 import OptionLabelFormat from "./OptionLabelFormat";
-import { CurrencyOption } from ".";
+import { CurrencyOption } from "./types";
 
 interface CurrencyDropdownProps {
 	value: string;
@@ -18,10 +18,7 @@ const options: CurrencyOption[] = tokens.map((token) => ({
 	label: token,
 }));
 
-const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
-	value,
-	onChange,
-}) => {
+const CurrencyDropdown = ({ value, onChange }: CurrencyDropdownProps) => {
 	const selectedOption = useMemo(
 		() => options.find((option) => option.value === value),
 		[value],
@@ -91,5 +88,7 @@ const currencyDropdownStyle: StylesConfig<CurrencyOption, false> = {
 		justifyContent: "center",
 	}),
 };
+
+CurrencyDropdown.displayName = "CurrencyDropdown";
 
 export default CurrencyDropdown;

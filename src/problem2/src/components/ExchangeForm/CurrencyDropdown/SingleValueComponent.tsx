@@ -1,7 +1,8 @@
 import { tokenImages } from "@/data/tokens";
-import { CurrencyOption } from ".";
+import { SingleValueProps } from "react-select";
+import { CurrencyOption } from "./types";
 
-const SingleValueComponent = ({ data }: { data: CurrencyOption }) => (
+const SingleValueComponent = ({ data }: SingleValueProps<CurrencyOption>) => (
 	<div className="flex items-center gap-2 overflow-x-hidden">
 		<img
 			src={tokenImages[data.value]}

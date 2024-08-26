@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { tokenPrices } from "@/data/tokens";
 import { ExchangeFormData } from "@/components/ExchangeForm";
@@ -13,30 +13,29 @@ export function useExchangeForm(): UseFormReturn<ExchangeFormData> & {
 			from: { currency: "", amount: "" },
 			to: { currency: "", amount: "" },
 		},
+		mode: "onChange",
 	});
+
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleExchange = useCallback(async () => {
 		setIsLoading(true);
 		const { from, to } = form.getValues();
-		await new Promise((resolve) =>
-			setTimeout(resolve, Math.random() * 2000),
-		);
+
 		try {
+			await new Promise((resolve) =>
+				setTimeout(resolve, Math.random() * 2000),
+			);
+
 			const fromPrice = tokenPrices[from.currency];
 			const toPrice = tokenPrices[to.currency];
 
-			if (!fromPrice) {
-				throw new Error("from.currency");
-			}
-			if (!toPrice) {
-				throw new Error("to.currency");
-			}
+			if (!fromPrice) throw new Error("from.currency");
+			if (!toPrice) throw new Error("to.currency");
 
 			const fromAmount = parseFloat(from.amount);
-			if (isNaN(fromAmount)) {
+			if (isNaN(fromAmount) || fromAmount < 0)
 				throw new Error("from.amount");
-			}
 
 			const rate = toPrice / fromPrice;
 			const toAmount = fromAmount * rate;
@@ -45,57 +44,65 @@ export function useExchangeForm(): UseFormReturn<ExchangeFormData> & {
 				toAmount.toFixed(6).replace(/\.?0+$/, ""),
 			);
 		} catch (error) {
-			if (error instanceof Error) {
-				switch (error.message) {
-					case "from.currency":
-						form.setError("from.currency", {
-							message: "Invalid currency",
-						});
-						break;
-					case "to.currency":
-						form.setError("to.currency", {
-							message: "Invalid currency",
-						});
-						break;
-					case "from.amount":
-						form.setError("from.amount", {
-							message: "Invalid amount",
-						});
-						break;
-				}
-			}
+			handleExchangeError(error as Error);
 		} finally {
 			setIsLoading(false);
 		}
-	}, [form, tokenPrices, setIsLoading]);
+	}, [form]);
 
-	const swapCurrencies = useCallback(
-		(event: React.MouseEvent) => {
-			event.preventDefault();
-			const fromCurrency = form.getValues("from").currency;
-			if (!fromCurrency) {
-				form.setError("from.currency", {
-					message: "Invalid currency",
-				});
-				return;
+	const handleExchangeError = useCallback(
+		(error: Error) => {
+			switch (error.message) {
+				case "from.currency":
+					form.setError("from.currency", {
+						message: "Please select a valid currency to send",
+					});
+					break;
+				case "to.currency":
+					form.setError("to.currency", {
+						message: "Please select a valid currency to receive",
+					});
+					break;
+				case "from.amount":
+					form.setError("from.amount", {
+						message: "Please enter a valid amount to send",
+					});
+					break;
+				default:
+					form.setError("from.amount", {
+						message: "An unexpected error occurred",
+					});
 			}
-			const toCurrency = form.getValues("to").currency;
-			if (!toCurrency) {
-				form.setError("to.currency", {
-					message: "Invalid currency",
-				});
-				return;
-			}
-			form.setValue("from.currency", toCurrency);
-			form.setValue("to.currency", fromCurrency);
 		},
 		[form],
 	);
 
-	return {
-		...form,
-		isLoading,
-		handleExchange,
-		swapCurrencies,
-	};
+	const swapCurrencies = useCallback<
+		React.MouseEventHandler<HTMLButtonElement>
+	>(
+		(event) => {
+			event.preventDefault();
+			const { from, to } = form.getValues();
+
+			if (!from.currency) {
+				form.setError("from.currency", {
+					message: "Please select a valid currency to send",
+				});
+				return;
+			}
+			if (!to.currency) {
+				form.setError("to.currency", {
+					message: "Please select a valid currency to receive",
+				});
+				return;
+			}
+			const oldFromCurrency = from.currency;
+
+			form.setValue("from.currency", to.currency);
+			form.setValue("to.currency", oldFromCurrency);
+		},
+		[form],
+	);
+
+	return { ...form, isLoading, handleExchange, swapCurrencies };
 }

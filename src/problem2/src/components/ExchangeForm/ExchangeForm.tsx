@@ -1,11 +1,10 @@
-import React from "react";
 import { useExchangeForm } from "@/hooks/useExchangeForm";
 import Field from "./Field";
 import SwapButton from "./SwapButton";
 import SubmitButton from "./SubmitButton";
 import ErrorToast from "./ErrorToast";
 
-const ExchangeForm: React.FC = () => {
+const ExchangeForm = () => {
 	const {
 		register,
 		control,
@@ -38,10 +37,12 @@ const ExchangeForm: React.FC = () => {
 					errors={errors.to}
 				/>
 				<SubmitButton isLoading={isLoading} />
-				<ErrorToast errors={errors} />
 			</div>
+			<ErrorToast errors={errors} />
 		</form>
 	);
 };
+
+ExchangeForm.displayName = "ExchangeForm";
 
 export default ExchangeForm;

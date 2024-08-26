@@ -1,26 +1,26 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
 	Control,
 	Controller,
 	FieldError,
+	FieldErrors,
 	FieldErrorsImpl,
 	Merge,
 	UseFormRegister,
 } from "react-hook-form";
-import { ExchangeField, ExchangeFormData, ExchangeFormTitles } from ".";
 import CurrencyDropdown from "./CurrencyDropdown";
+import { ExchangeField, ExchangeFieldData, ExchangeFormData } from "./types";
+
+const ExchangeFormTitles: Record<ExchangeField, string> = {
+	from: "Amount to send",
+	to: "Amount to receive",
+};
 
 interface FieldProps {
 	field: ExchangeField;
 	register: UseFormRegister<ExchangeFormData>;
 	control: Control<ExchangeFormData, any>;
-	errors?: Merge<
-		FieldError,
-		FieldErrorsImpl<{
-			currency: string;
-			amount: string;
-		}>
-	>;
+	errors?: Merge<FieldError, FieldErrorsImpl<ExchangeFieldData>>;
 }
 
 const Field = ({ field, register, control, errors }: FieldProps) => {
@@ -59,5 +59,7 @@ const Field = ({ field, register, control, errors }: FieldProps) => {
 		</div>
 	);
 };
+
+Field.displayName = "Field";
 
 export default Field;
