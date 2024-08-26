@@ -1,41 +1,63 @@
-import React from "react";
-import { Control, Controller, UseFormRegister } from "react-hook-form";
-import { ExchangeField, ExchangeFormData } from "@/types/exchangeForm";
-import { ExchangeFormTitles } from "@/data/exchangeForm";
+import React, { useMemo } from "react";
+import {
+	Control,
+	Controller,
+	FieldError,
+	FieldErrorsImpl,
+	Merge,
+	UseFormRegister,
+} from "react-hook-form";
+import { ExchangeField, ExchangeFormData, ExchangeFormTitles } from ".";
 import CurrencyDropdown from "./CurrencyDropdown";
 
 interface FieldProps {
-  field: ExchangeField;
-  register: UseFormRegister<ExchangeFormData>;
-  control: Control<ExchangeFormData>;
+	field: ExchangeField;
+	register: UseFormRegister<ExchangeFormData>;
+	control: Control<ExchangeFormData, any>;
+	errors?: Merge<
+		FieldError,
+		FieldErrorsImpl<{
+			currency: string;
+			amount: string;
+		}>
+	>;
 }
 
-const Field: React.FC<FieldProps> = ({ field, register, control }) => {
-  const inputID = `input-${field}`;
+const Field = ({ field, register, control, errors }: FieldProps) => {
+	const inputID = useMemo(() => `input-${field}`, [field]);
 
-  return (
-    <div className="flex flex-col items-center gap-2 my-2">
-      <label htmlFor={inputID}>{ExchangeFormTitles[field]}</label>
-      <label className="flex items-center gap-2 p-2 input input-bordered input-primary">
-        <Controller
-          name={`${field}.currency`}
-          control={control}
-          render={({ field: { value, onChange } }) => (
-            <CurrencyDropdown value={value} onChange={onChange} />
-          )}
-        />
-        <input
-          id={inputID}
-          type="number"
-          step="0.000001"
-          min="0"
-          readOnly={field === "to"}
-          className="w-40 pr-2"
-          {...register(`${field}.amount`)}
-        />
-      </label>
-    </div>
-  );
+	const inputErrorClass = useMemo(() => {
+		if (errors?.amount || errors?.currency) {
+			return "input-error";
+		}
+		return "";
+	}, [errors]);
+
+	return (
+		<div className="flex flex-col items-center gap-2 my-2">
+			<label htmlFor={inputID}>{ExchangeFormTitles[field]}</label>
+			<label
+				className={`flex items-center gap-2 p-1 input input-bordered input-primary ${inputErrorClass}`}
+			>
+				<Controller
+					name={`${field}.currency`}
+					control={control}
+					render={({ field: { value, onChange } }) => (
+						<CurrencyDropdown value={value} onChange={onChange} />
+					)}
+				/>
+				<input
+					id={inputID}
+					type="number"
+					step="0.000001"
+					min="0"
+					readOnly={field === "to"}
+					className="w-40 pr-2"
+					{...register(`${field}.amount`)}
+				/>
+			</label>
+		</div>
+	);
 };
 
 export default Field;
